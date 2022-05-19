@@ -1,0 +1,91 @@
+.tag{
+    width: 100%;
+    height: 30px;
+    transition: padding 300ms;
+    position: relative;
+    .tag_box{
+        width: 100%;
+        height: 100%;
+        border-left: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+        box-shadow: 0 5px 5px #f0f0f0;
+        overflow: hidden;
+        .tag_content{
+            height: 100%;
+            display: inline-flex;
+            position: relative;
+            left: 0;
+            transition: all 500ms;
+            .tag_item{
+                min-width: 100px;
+                height: 100%;
+                background-color: #fafafa;
+                display: inline-flex;
+                position: relative;
+                padding: 0 10px;
+                text-align: center;
+                line-height: 29px;
+                font-size: 14px;
+                color: #666;
+                border-right: 1px solid #f0f0f0;
+                opacity: 1;
+                transition: all 300ms;
+                overflow: hidden;
+                &.active{
+                    padding-right: 10px;
+                    background-color: #e6f7ff;
+                    color: #1890ff;
+                    .item_btn{
+                        width: 79px;
+                    }
+                    .close_btn{
+                        // font-size: 0;
+                        width: 0;
+                        opacity: 0;
+                    }
+                }
+                & + .tag_item{
+                    border-left: none;
+                    box-shadow: inset 10px 0px 10px -10px #ccc;
+                }
+                .item_btn{
+                    display: inline-block;
+                    width: 67px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    transition:  width 300ms;
+                    cursor: pointer;
+                }
+                .close_btn{
+                    display: inline-block;
+                    width: 12px;
+                    font-size: 12px;
+                    transition: all 300ms;
+                    cursor: pointer;
+                    &:hover{
+                        border-color: #f44336;
+                        color: #f44336;
+                    }
+                }
+            }
+        }
+    }
+    .move_btn{
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #999;
+        transition: color 500ms;
+        cursor: pointer;
+        &.move_btn_right{
+            left: auto;
+            right: 0;
+        }
+        &:hover{
+            color: #1890ff
+        }
+    }
+}
