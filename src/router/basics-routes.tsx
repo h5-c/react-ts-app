@@ -1,8 +1,9 @@
+import { lazy } from 'react'
 import DynamicRoutes from '@/router/dynamic-routes'
 import Login from '@/views/login'
-import Register from '@/views/register'
-import Error from '@/views/error'
 import LookupRoutes from '@/router/lookup-routes'
+const Register = lazy(() => import('@/views/register'))
+const Error = lazy(() => import('@/views/error'))
 
 const basicsRoutes: {
     path: string;

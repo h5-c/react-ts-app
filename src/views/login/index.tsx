@@ -7,7 +7,7 @@ import { Spin, Form, Checkbox, message, Button, Modal } from 'antd'
 import { UserDeleteOutlined, CheckCircleOutlined } from '@ant-design/icons'
 import { deepCopy, stateProps, dispatchProps, setCookie } from '@/utils/common'
 import Input from '@/components/input'
-import scssModules from './login.module.scss'
+import modules from './login.module.scss'
 
 
 const renderList = [{
@@ -125,7 +125,7 @@ function Index(state: any) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
-        <div className={scssModules.box}>
+        <div className={modules.box}>
             <video className='login-bg' autoPlay loop muted>
                 <source src="https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcTNrnyxp3CPFgj_DJGPAtzUB8qGkHdGUjRgIA" type="video/mp4"/>
             </video>

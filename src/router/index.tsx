@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { HashRouter, Routes, Route } from 'react-router-dom'
-import basicsRoutes from '@/router/basics-routes'
-import Layout from '@/components/layouts'
 import { stateProps, useCallbackState } from '@/utils/common'
+import basicsRoutes from '@/router/basics-routes'
+import Layouts from '@/components/layouts'
 import '@/assets/style/common.scss'
 
 function Index(state: { loading?: boolean, getDispatch?: Function, allRoutes?: any[] }) {
@@ -20,7 +20,7 @@ function Index(state: { loading?: boolean, getDispatch?: Function, allRoutes?: a
                 {/* 动态路由 */}
                 { 
                     data.getDynamicRoutes.map((item: { path: string; element: JSX.Element }, index: number) => {
-                        return <Route path={item.path} element={<Layout contentPath={item.path} />} key={index} />
+                        return <Route path={item.path} element={<Layouts contentPath={item.path} />} key={index} />
                     })
                 }
             </Routes>
