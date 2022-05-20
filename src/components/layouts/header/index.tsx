@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { stateProps, dispatchProps } from '@/utils/common'
 import { Dropdown, Menu, Modal  } from 'antd'
@@ -8,7 +8,6 @@ import { delCookie } from '@/utils/common'
 
 function Index(state: { class: string, user?: { name?: string | undefined }, getDispatch?: Function }) {
     const [data, setData] = useState({ userName: null })
-    const navigate = useNavigate()
     const getLogin = () => {
         Modal.confirm({
             title: '提示',
@@ -17,8 +16,7 @@ function Index(state: { class: string, user?: { name?: string | undefined }, get
             cancelText: '取消',
             onOk() {
                 delCookie('token')
-                navigate('/login')
-                state.getDispatch && state.getDispatch('defaultParams', {})
+                window.location.href = '/'
             }
         })
     }

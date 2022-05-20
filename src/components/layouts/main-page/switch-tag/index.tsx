@@ -18,7 +18,7 @@ interface state{
 
 function Index(state: {
     allRoutes?: {
-        path: string
+        code: string
         name: string
     }[]
     convenientNav?: {
@@ -97,8 +97,8 @@ function Index(state: {
         if (!val.items.filter((key: { value: string }) => key.value === pathname).length) {
             const allRoutes = state.allRoutes ? state.allRoutes : []
             for (const key of allRoutes) {
-                if (key.path === pathname) {
-                    const items = { label: key.name, value: key.path, style: { opacity: 0 } }
+                if (key.code === pathname) {
+                    const items = { label: key.name, value: key.code, style: { opacity: 0 } }
                     setData({ ...val, items: [...val.items, items] }, () => {
                         setData((res: state) => ({ ...res, items: res.items.map(key => (key.style = {}) && key) }), (res: state) => {
                             state.getDispatch && state.getDispatch('convenientNav', res.items)

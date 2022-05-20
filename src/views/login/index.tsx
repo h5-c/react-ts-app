@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import jsencrypt from 'jsencrypt'
 import { useNavigate } from 'react-router-dom'
@@ -6,6 +6,7 @@ import { getImage, login } from '@/api/request-url'
 import { Spin, Form, Checkbox, message, Button, Modal } from 'antd'
 import { UserDeleteOutlined, CheckCircleOutlined } from '@ant-design/icons'
 import { deepCopy, stateProps, dispatchProps, setCookie } from '@/utils/common'
+import dynamicRoutes from '@/router/dynamic-routes'
 import Input from '@/components/input'
 import modules from './login.module.scss'
 
@@ -65,7 +66,9 @@ function Index(state: any) {
                 if (res.msg === 'ok' && payload) {
                     setCookie('token', payload.access_token)
                     setCookie('userInfo', payload.userInfo)
-                    navigate('/')
+                    dynamicRoutes().then(() => {
+                        navigate('/')
+                    })
                 } else {
                     message.error(res.msg)
                     _setData({ isDisabled: false })

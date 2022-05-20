@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Button } from 'antd'
+import { getCookie } from '@/utils/common'
 import modules from './error.module.scss'
 
 export default function Index(props: {id?: string}) {
@@ -18,11 +20,16 @@ export default function Index(props: {id?: string}) {
             <p className={modules.message}>{message[error_id]}</p>
         </div>
     }
+    useEffect(() => {
+        const token = getCookie('token')
+        if (!token) navigate('/login')
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return (
         <div className={`${modules.box}`}>
             <ErrorContent/>
             <div className={modules.btn_group}>
-                <Button className={modules.ant_btn} type="primary" shape="round" onClick={() => navigate('/home')}>返回首页</Button>
+                <Button className={modules.ant_btn} type="primary" shape="round" onClick={() => navigate('/')}>返回首页</Button>
                 <Button className={modules.ant_btn} shape="round" style={{ borderColor: '#1890ff', color: '#1890ff' }} onClick={() => navigate(-1)}>返回上一页</Button>
             </div>
         </div>

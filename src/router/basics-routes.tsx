@@ -1,9 +1,26 @@
-import { lazy } from 'react'
-import DynamicRoutes from '@/router/dynamic-routes'
-import Login from '@/views/login'
-import LookupRoutes from '@/router/lookup-routes'
+import { useEffect, lazy } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Suspense from '@/components/suspense'
+import { getCookie } from '@/utils/common'
+const Login = lazy(() => import('@/views/login'))
 const Register = lazy(() => import('@/views/register'))
 const Error = lazy(() => import('@/views/error'))
+
+const Home = () => {
+    const navigate = useNavigate()
+    useEffect(() => {
+        const token = getCookie('token')
+        // 判断登录状态
+        if (token) navigate('/home')
+        else navigate('/login')
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    return <></>
+}
+
+const Suspenses =(props: {children: any}) => {
+    return <Suspense children={props.children}/>
+}
 
 const basicsRoutes: {
     path: string;
@@ -11,24 +28,24 @@ const basicsRoutes: {
     element: JSX.Element;
 }[] = [{
     path: '/',
-    name: '验证登录',
-    element: <DynamicRoutes/>
+    name: '基础',
+    element: <Home/>
 }, {
     path: '/login',
     name: '登录',
-    element: <Login/>
+    element: <Suspenses><Login/></Suspenses>
 }, {
     path: '/register',
     name: '注册',
-    element: <Register/>
+    element: <Suspenses><Register/></Suspenses>
 }, {
     path: '/error/:id',
     name: '错误',
-    element: <Error/>
+    element: <Suspenses><Error/></Suspenses>
 }, {
     path: '/*',
     name: '404',
-    element: <LookupRoutes/>
+    element: <Suspenses><Error/></Suspenses>
 }]
 
 export default basicsRoutes

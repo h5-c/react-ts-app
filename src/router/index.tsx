@@ -1,17 +1,28 @@
-import { useEffect } from 'react'
+import { useState, useEffect, lazy } from 'react'
 import { connect } from 'react-redux'
 import { HashRouter, Routes, Route } from 'react-router-dom'
-import { stateProps, useCallbackState } from '@/utils/common'
+import { stateProps, dispatchProps, getCookie } from '@/utils/common'
+import Suspense from '@/components/suspense'
 import basicsRoutes from '@/router/basics-routes'
-import Layouts from '@/components/layouts'
+import dynamicRoutes from '@/router/dynamic-routes'
 import '@/assets/style/common.scss'
+const Layouts = lazy(() => import('@/components/layouts'))
 
-function Index(state: { loading?: boolean, getDispatch?: Function, allRoutes?: any[] }) {
-    const [data, setData] = useCallbackState({ getDynamicRoutes: [] })
+interface state{
+    dynamicRoutes: { code: string }[]
+}
+
+function Index(state: { allRoutes?: { code: string }[], getDispatch?: Function }) {
+    const [data, setData] = useState<state>({ dynamicRoutes: [] })
     useEffect(() => {
-        state.allRoutes && setData({ getDynamicRoutes: state.allRoutes })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        state.allRoutes && setData({ dynamicRoutes: state.allRoutes  })
     }, [state.allRoutes])
+    useEffect(() => {
+        const token = getCookie('token')
+        // 判断登录状态
+        if (token) dynamicRoutes()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return (
         <HashRouter>
             <Routes>
@@ -19,8 +30,11 @@ function Index(state: { loading?: boolean, getDispatch?: Function, allRoutes?: a
                 { basicsRoutes.map((item, index: number) => <Route {...item} key={index} />) }
                 {/* 动态路由 */}
                 { 
-                    data.getDynamicRoutes.map((item: { path: string; element: JSX.Element }, index: number) => {
-                        return <Route path={item.path} element={<Layouts contentPath={item.path} />} key={index} />
+                    data.dynamicRoutes.map((item, index: number) => {
+                        return <Route path={item.code} element={
+                            <Suspense>
+                            <Layouts contentPath={item.code} />
+                        </Suspense>} key={index} />
                     })
                 }
             </Routes>
@@ -28,4 +42,4 @@ function Index(state: { loading?: boolean, getDispatch?: Function, allRoutes?: a
     )
 }
 
-export default connect(stateProps)(Index)
+export default connect(stateProps, dispatchProps)(Index)
