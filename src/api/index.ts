@@ -2,11 +2,9 @@ import axios from 'axios'
 import { delCookie } from '@/utils/common'
 import { message } from 'antd'
 
-const http = process.env.REACT_APP_ENV ? '' : 'https://www.fastmock.site'
-
 // 创建服务
 const service = axios.create({
-    baseURL: `${http}/mock/96a027f7f45730e0dfc3dd6be1aa1d7a/api-${process.env.REACT_APP_ENV?process.env.REACT_APP_ENV:'dev'}`,
+    baseURL: `/mock/96a027f7f45730e0dfc3dd6be1aa1d7a/api-dev`,
     timeout: 8000
 })
 

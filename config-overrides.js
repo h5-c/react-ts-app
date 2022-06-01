@@ -21,7 +21,7 @@ const devServerConfig = () => config => {
         } else if (env === 'uat') {
             return 'https://www.fastmock.site'
         } else {
-            return null
+            return 'https://www.fastmock.site'
         }
     }
     return {
