@@ -4,6 +4,11 @@ declare module 'react-custom-scrollbars' {
     export = content
 }
 
+declare module "*.mp4" {
+    const classes: string;
+    export default classes;
+}
+
 declare module "*.module.scss" {
     const classes: { [key: string]: string };
     export default classes;

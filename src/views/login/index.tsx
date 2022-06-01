@@ -1,14 +1,15 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import jsencrypt from 'jsencrypt'
 import { useNavigate } from 'react-router-dom'
 import { getImage, login } from '@/api/request-url'
 import { Spin, Form, Checkbox, message, Button, Modal } from 'antd'
 import { UserDeleteOutlined, CheckCircleOutlined } from '@ant-design/icons'
-import { deepCopy, stateProps, dispatchProps, setCookie } from '@/utils/common'
+import { stateProps, dispatchProps, setCookie, useCallbackState } from '@/utils/common'
+import jsencrypt from 'jsencrypt'
 import dynamicRoutes from '@/router/dynamic-routes'
 import Input from '@/components/input'
 import modules from './login.module.scss'
+import loginBg from '@/assets/images/login_bg.mp4'
 
 
 const renderList = [{
@@ -51,31 +52,32 @@ const renderList = [{
 function Index(state: any) {
     const formRef: any = useRef()
     const navigate = useNavigate()
-    const [data, setData] = useState({ loading: false, picturepath: '', captchaKey: null, clause: false, isDisabled: false, modal: { title: null, visible: false, children: null } })
+    const [data, setData] = useCallbackState({ loading: false, picturepath: '', captchaKey: null, clause: false, isDisabled: false, modal: { title: null, visible: false, children: null } })
     const onFinish = (value: any) => {
         if (value.remember) {
             let jsen = new jsencrypt()
             jsen.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNNorgFngK1zjHOnQlIUh5NjOxZIiEPZ8Knu6B/IyY0LBRToo1TZC7/nK6j8on/2sBdv5nFuTwlOpW9UL8C4yZJdjTwYXn5X+wZZsz1RXNI5zjhSXuGeYzF7WhxusKo6zrR6b0IMNg2W016PWU3UkjOXxoaIGkMN77oIorPP5bHQIDAQAB")
             value.password = jsen.encrypt(value.password)
-            _setData({ isDisabled: true })
-            let { username, password, captcha } = value,
-                captchaKey = data.captchaKey,
-                params = { username, password, captcha, captchaKey, enterpriseCode: 'gree' }
-            login(params).then((res: any) => {
-                let payload = res.payload
-                if (res.msg === 'ok' && payload) {
-                    setCookie('token', payload.access_token)
-                    setCookie('userInfo', payload.userInfo)
-                    dynamicRoutes().then(() => {
-                        navigate('/')
-                    })
-                } else {
-                    message.error(res.msg)
-                    _setData({ isDisabled: false })
-                    getImages()
-                }
-            }).catch(() => {
-                _setData({ isDisabled: false })
+            setData({ ...data, isDisabled: true }, () => {
+                let { username, password, captcha } = value,
+                    captchaKey = data.captchaKey,
+                    params = { username, password, captcha, captchaKey, enterpriseCode: 'gree' }
+                login(params).then((res: any) => {
+                    let payload = res.payload
+                    if (res.msg === 'ok' && payload) {
+                        setCookie('token', payload.access_token, 0.00023148148148148146)
+                        setCookie('userInfo', payload.userInfo)
+                        dynamicRoutes(payload.access_token).then(() => {
+                            navigate('/')
+                        })
+                    } else {
+                        message.error(res.msg)
+                        setData({ ...data, isDisabled: false })
+                        getImages()
+                    }
+                }).catch(() => {
+                    setData({ ...data, isDisabled: false })
+                })
             })
         } else {
             message.error('请阅读并勾选《用户服务协议》和《隐私协议》!')
@@ -94,34 +96,30 @@ function Index(state: any) {
             }
         }
     }
-    // 修改数据
-    const _setData = (val: any) => {
-        let dataCopy = deepCopy(data)
-        for (let key in val) dataCopy[key] = val[key]
-        setData({...dataCopy})
-    }
     // 获取验证码
     const getImages = () => {
-        _setData({ loading: true })
-        getImage().then((res: any) => {
-            if (res.msg === 'ok') {
-                _setData({ 
-                    picturepath: res.payload.base64Img,
-                    captchaKey: res.payload.captchaKey,
-                    loading: false
-                })
-            }
-        }).catch(() => {
-            _setData({ loading: false })
+        setData({ ...data, loading: true }, () => {
+            getImage().then((res: any) => {
+                if (res.msg === 'ok') {
+                    setData({
+                        ...data,
+                        picturepath: res.payload.base64Img,
+                        captchaKey: res.payload.captchaKey,
+                        loading: false
+                    })
+                }
+            }).catch(() => {
+                setData({ ...data, loading: false })
+            })
         })
     }
     const getModal = (title: string) => {
         let modal = { title, visible: true, children: <h3>{ title }</h3> }
-        _setData({ modal })
+        setData({ ...data, modal })
     }
     const onModalCancel = () => {
         let modal = { title: null, visible: false, children: null }
-        _setData({ modal })
+        setData({ ...data, modal })
     }
     useEffect(() => {
         getImages()
@@ -130,7 +128,7 @@ function Index(state: any) {
     return (
         <div className={modules.box}>
             <video className='login-bg' autoPlay loop muted>
-                <source src="https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcTNrnyxp3CPFgj_DJGPAtzUB8qGkHdGUjRgIA" type="video/mp4"/>
+                <source src={loginBg} type="video/mp4"/>
             </video>
             <div className='login-content'>
                 <Form ref={formRef} labelCol={{ span: 3 }} onFinish={onFinish} onFinishFailed={onFinishFailed}>

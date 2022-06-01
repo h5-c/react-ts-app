@@ -9,23 +9,27 @@ paths.appBuild = path.join(path.dirname(paths.appBuild), 'dist')
 
 // 服务代理跨域
 const devServerConfig = () => config => {
-    // 环境变量
-    const REACT_APP_ENV = process.env.REACT_APP_ENV
-    // 代理域名
-    let REACT_APP_BASE = null
     // 判断环境变量执行对应地址代理
-    if (REACT_APP_ENV === 'dev') {
-        REACT_APP_BASE = 'https://www.fastmock.site'
-    } else if (REACT_APP_ENV === 'prod') {
-        REACT_APP_BASE = 'https://www.fastmock.site'
+    const REACT_APP_BASE = () => {
+        // 环境变量
+        const env = process.env.REACT_APP_ENV
+        // 代理域名
+        if (env === 'dev') {
+            return 'https://www.fastmock.site'
+        } else if (env === 'qa') {
+            return 'https://www.fastmock.site'
+        } else if (env === 'uat') {
+            return 'https://www.fastmock.site'
+        } else {
+            return null
+        }
     }
-    console.log(REACT_APP_BASE, 123)
     return {
         ...config,
         compress: true,
         proxy: {
             '/mock': {
-                target: REACT_APP_BASE ? REACT_APP_BASE : 'https://www.fastmock.site', //要跨域的域名
+                target: REACT_APP_BASE(), //要跨域的域名
                 ws: true, // 是否启用websockets
                 changeOrigin: true, //是否允许跨越
                 // pathRewrite: {
@@ -60,6 +64,9 @@ module.exports = {
                         warnings: false,
                         comparisons: false,
                         inline: 2,
+                        drop_console: process.env.NODE_ENV === "production", // 生产环境下移除控制台所有的内容
+                        drop_debugger: false, // 移除断点
+                        pure_funcs: process.env.NODE_ENV === "production" ? ["console.log"] : "", // 生产环境下移除console
                     },
                     mangle: {
                         safari10: true,

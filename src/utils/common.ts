@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 
-// 设置cookie、默认有效时间7天
-export const setCookie = (name: string, value: any, day = 7) => {
+// 设置cookie、默认有效时间7天(可设置小数)
+export const setCookie = (name: string, value: any, day: number = 7) => {
+    day = day * 1000 * 60 * 60 * 24
     const date = new Date()
-    date.setDate(date.getDate() + day)
+    date.setTime(date.getTime() + day)
     // 引用类型转换为字符类型
     if (value instanceof Object || value instanceof Array) value = JSON.stringify(value)
+    console.log(date)
     document.cookie = `${name}=${value};expires=${date}`
 }
 

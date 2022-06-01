@@ -2,11 +2,11 @@ import { getPartner, getMenuByAppId } from '@/api/request-url'
 import { getCookie, deepCopy } from '@/utils/common'
 import store from '@/store'
 
-const getDispatch = (type: string, value: boolean | object | any[]) => {
+const getDispatch = (type: string, value: string | boolean | object | any[]) => {
     store.dispatch({ type, value })
 }
 
-const dynamicRoutes = () => {
+const dynamicRoutes = (token: string) => {
     return new Promise(resolves => {
         getPartner().then((res: any) => {
             const { msg, payload} = res
@@ -34,12 +34,12 @@ const dynamicRoutes = () => {
                             })
                         }
                         menuList = menuHandle(deepCopy(payload))
-                        getDispatch('loading', false)
                         getDispatch('defaultParams', { userId, tenantId, appId: 623 })
                         getDispatch('user', { id: userId, name: username })
                         getDispatch('menuList', menuList)
                         getDispatch('allRoutes', allRoutes)
-                        resolves('')
+                        getDispatch('token', token)
+                        resolves(allRoutes)
                     }
                 })
             }
