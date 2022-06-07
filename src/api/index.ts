@@ -4,7 +4,7 @@ import { message } from 'antd'
 
 // 创建服务
 const service = axios.create({
-    baseURL: `/mock/96a027f7f45730e0dfc3dd6be1aa1d7a/api-dev`,
+    baseURL: `/api`,
     timeout: 8000
 })
 

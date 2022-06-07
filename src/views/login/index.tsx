@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getImage, login } from '@/api/request-url'
+import { getImage, getPublicKey, login } from '@/api/request-url'
 import { Spin, Form, Checkbox, message, Button, Modal } from 'antd'
 import { UserDeleteOutlined, CheckCircleOutlined } from '@ant-design/icons'
 import { stateProps, dispatchProps, setCookie, useCallbackState } from '@/utils/common'
@@ -49,35 +49,40 @@ const renderList = [{
     rules: [{ required: true, min: 4, message: '请输入4位验证码！'}]
 }]
 
-function Index(state: any) {
+function Index(props: { setRoutes: Function }) {
     const formRef: any = useRef()
     const navigate = useNavigate()
     const [data, setData] = useCallbackState({ loading: false, picturepath: '', captchaKey: null, clause: false, isDisabled: false, modal: { title: null, visible: false, children: null } })
     const onFinish = (value: any) => {
         if (value.remember) {
             let jsen = new jsencrypt()
-            jsen.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNNorgFngK1zjHOnQlIUh5NjOxZIiEPZ8Knu6B/IyY0LBRToo1TZC7/nK6j8on/2sBdv5nFuTwlOpW9UL8C4yZJdjTwYXn5X+wZZsz1RXNI5zjhSXuGeYzF7WhxusKo6zrR6b0IMNg2W016PWU3UkjOXxoaIGkMN77oIorPP5bHQIDAQAB")
-            value.password = jsen.encrypt(value.password)
-            setData({ ...data, isDisabled: true }, () => {
-                let { username, password, captcha } = value,
-                    captchaKey = data.captchaKey,
-                    params = { username, password, captcha, captchaKey, enterpriseCode: 'gree' }
-                login(params).then((res: any) => {
-                    let payload = res.payload
-                    if (res.msg === 'ok' && payload) {
-                        setCookie('token', payload.access_token, 0.00023148148148148146)
-                        setCookie('userInfo', payload.userInfo)
-                        dynamicRoutes(payload.access_token).then(() => {
-                            navigate('/')
+            getPublicKey().then((res: any) => {
+                if (res.msg === 'ok' && res.payload) {
+                    jsen.setPublicKey(res.payload)
+                    value.password = jsen.encrypt(value.password)
+                    setData({ ...data, isDisabled: true }, () => {
+                        let { username, password, captcha } = value,
+                            captchaKey = data.captchaKey,
+                            params = { username, password, captcha, captchaKey, enterpriseCode: 'gree' }
+                        login(params).then((res: any) => {
+                            let payload = res.payload
+                            if (res.msg === 'ok' && payload) {
+                                setCookie('token', payload.access_token, 0.00023148148148148146)
+                                setCookie('userInfo', payload.userInfo)
+                                dynamicRoutes(payload.access_token).then((routes: any) => {
+                                    props.setRoutes(routes)
+                                    navigate('/')
+                                })
+                            } else {
+                                message.error(res.msg)
+                                setData({ ...data, isDisabled: false })
+                                getImages()
+                            }
+                        }).catch(() => {
+                            setData({ ...data, isDisabled: false })
                         })
-                    } else {
-                        message.error(res.msg)
-                        setData({ ...data, isDisabled: false })
-                        getImages()
-                    }
-                }).catch(() => {
-                    setData({ ...data, isDisabled: false })
-                })
+                    })
+                }
             })
         } else {
             message.error('请阅读并勾选《用户服务协议》和《隐私协议》!')

@@ -9,7 +9,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        animation: translateY-top 800ms 1;
+        animation: translateY-top 800ms 1 forwards;
         :global{
             .logo{
                 width: auto;
@@ -49,9 +49,9 @@
         display: flex;
         flex-wrap: wrap;
         .menu{
-            animation: translateX-left 800ms 1;
+            animation: translateX-left 800ms 1 forwards;
         } .main{
-            animation: translateX-right 800ms 1;
+            animation: translateX-right 800ms 1 forwards;
         }
         .menu{
             :global{

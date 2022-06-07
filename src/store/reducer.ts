@@ -5,14 +5,13 @@ const defaultState = {
     menuList: [],
     allRoutes: [],
     user: { id: null, name: null },
-    token: null,
-    quickNav: []
+    token: null
 }
 
 const reducer = (state: any = defaultState, action: { type: string, value: boolean | string | number | object | any[] }) => {
     const stateCopy = deepCopy(state),
         { type, value } = action
-    if (type) {
+    if (type && value !== undefined) {
         stateCopy[type] = value
     }
     return stateCopy

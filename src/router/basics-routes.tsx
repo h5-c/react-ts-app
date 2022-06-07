@@ -20,12 +20,12 @@ const Home = () => {
 const basicsRoutes = [{
     path: '/',
     element: <Home/>
-}, {
-    path: '/login',
-    element: <Suspense><Login/></Suspense>
-}, {
-    path: '/register',
-    element: <Suspense><Register/></Suspense>
+// }, {
+//     path: '/login',
+//     element: <Suspense><Login/></Suspense>
+// }, {
+//     path: '/register',
+//     element: <Suspense><Register/></Suspense>
 }, {
     path: '/error/:id',
     element: <Suspense><Error/></Suspense>

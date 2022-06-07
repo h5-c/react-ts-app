@@ -16,18 +16,7 @@ interface state{
     contenLeft: number
 }
 
-function Index(state: {
-    allRoutes?: {
-        code: string
-        name: string
-    }[]
-    convenientNav?: {
-        value: string
-        label: string
-        style: object
-    }[]
-    getDispatch?: Function 
-}) {
+function Index(state: { allRoutes?: { code: string; name: string }[] }) {
     const boxRef: any = useRef(),
     contentRef: any = useRef(),
     activeRef: any = useRef(),
@@ -47,7 +36,7 @@ function Index(state: {
                     // DOM渲染机制、active节点在后一位，删除当前节点，active会获得短暂动画，故暂停动画、防止DOM动画抖动
                     setTimeout(() => {
                         setData((res: state) => ({ ...res, items: res.items.map(key => (key.style = {}) && key) }), (res: state) => {
-                            state.getDispatch && state.getDispatch('convenientNav', res.items)
+                            sessionStorage.setItem('convenientNav', JSON.stringify(res.items))
                             getActiveLeft()
                         })
                     }, 100)
@@ -101,7 +90,7 @@ function Index(state: {
                     const items = { label: key.name, value: key.code, style: { opacity: 0 } }
                     setData({ ...val, items: [...val.items, items] }, () => {
                         setData((res: state) => ({ ...res, items: res.items.map(key => (key.style = {}) && key) }), (res: state) => {
-                            state.getDispatch && state.getDispatch('convenientNav', res.items)
+                            sessionStorage.setItem('convenientNav', JSON.stringify(res.items))
                             getActiveLeft()
                         })
                     })
@@ -113,7 +102,8 @@ function Index(state: {
     }
     useEffect(() => {
         // 调用redux数据
-        if (!data.items.length && state.convenientNav) setData((res: state) => ({ ...res, items: state.convenientNav }), () =>  getActiveLeft())
+        const convenientNav = sessionStorage.getItem('convenientNav')
+        if (!data.items.length && convenientNav) setData((res: state) => ({ ...res, items: JSON.parse(convenientNav) }), () =>  getActiveLeft())
         else getConvenientNav(data)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname])

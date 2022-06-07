@@ -3,6 +3,9 @@ import { get, post } from '@/api/request'
 // 获取验证码
 export const getImage = () => get(`/login/getImage`)
 
+// 获取公钥
+export const getPublicKey = () => get(`/publicKey`)
+
 // 登录
 export const login = (params: object) => post(`/login/loging`, params)
 

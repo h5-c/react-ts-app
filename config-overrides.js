@@ -15,7 +15,7 @@ const devServerConfig = () => config => {
         const env = process.env.REACT_APP_ENV
         // 代理域名
         if (env === 'dev') {
-            return 'https://www.fastmock.site'
+            return 'http://172.28.14.210:3061'
         } else if (env === 'qa') {
             return 'https://www.fastmock.site'
         } else if (env === 'uat') {
@@ -28,8 +28,8 @@ const devServerConfig = () => config => {
         ...config,
         compress: true,
         proxy: {
-            '/mock': {
-                target: REACT_APP_BASE(), //要跨域的域名
+            '/api': {
+                target: 'http://172.28.14.210:3061', //要跨域的域名
                 ws: true, // 是否启用websockets
                 changeOrigin: true, //是否允许跨越
                 // pathRewrite: {

@@ -6,7 +6,7 @@ import { Dropdown, Menu, Modal  } from 'antd'
 import { UserDeleteOutlined, DownOutlined } from '@ant-design/icons'
 import { delCookie } from '@/utils/common'
 
-function Index(state: { class: string; user?: { name?: string }; getDispatch?: Function }) {
+function Index(state: { class: string; setRoutes: Function; user?: { name?: string }; getDispatch?: Function }) {
     const [data, setData] = useState({ userName: null })
     const getLogin = () => {
         Modal.confirm({
@@ -18,6 +18,7 @@ function Index(state: { class: string; user?: { name?: string }; getDispatch?: F
                 delCookie('token')
                 // 清空用户路由权限
                 state.getDispatch && state.getDispatch('allRoutes', [])
+                state.setRoutes([])
             }
         })
     }
