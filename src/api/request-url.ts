@@ -4,7 +4,7 @@ import { get, post } from '@/api/request'
 export const getImage = () => get(`/login/getImage`)
 
 // 获取公钥
-export const getPublicKey = () => get(`/publicKey`)
+export const sysRegion = () => get(`/login/sysRegion`)
 
 // 登录
 export const login = (params: object) => post(`/login/loging`, params)

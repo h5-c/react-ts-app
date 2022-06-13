@@ -21,8 +21,8 @@ export default function Index(props: {id?: string}) {
         </div>
     }
     useEffect(() => {
-        const token = getCookie('token')
-        if (!token) navigate('/login')
+        // const token = getCookie('token')
+        // if (!token) navigate('/login')
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (

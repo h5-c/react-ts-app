@@ -47,7 +47,7 @@ service.interceptors.response.use(
         const { headers, method, url, data } = err.config
         const { status } = err.request
         // 输出错误信息
-        message.error(err.message)
+        message.error(err.response.data || err.message)
         if (status === 401) {
             // token错误、删除token重新登录
             delCookie('token')

@@ -3,6 +3,10 @@ declare module 'react-custom-scrollbars' {
     const content: any
     export = content
 }
+declare module '@/components/form-view' {
+    const content: any
+    export = content
+}
 
 declare module "*.mp4" {
     const classes: string;

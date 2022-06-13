@@ -29,7 +29,7 @@ const devServerConfig = () => config => {
         compress: true,
         proxy: {
             '/api': {
-                target: 'http://172.28.14.210:3061', //要跨域的域名
+                target: 'https://cms.zhangsir.cc', //要跨域的域名
                 ws: true, // 是否启用websockets
                 changeOrigin: true, //是否允许跨越
                 // pathRewrite: {

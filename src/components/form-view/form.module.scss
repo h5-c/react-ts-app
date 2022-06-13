@@ -1,0 +1,33 @@
+.item{
+    & + .item{
+        margin-top: 24px;margin-bottom: 0;
+    }
+    :global{
+        .ant-input-group-addon{
+            padding: 0;
+            .ant-spin-container{
+                .ant-btn, & > img{
+                    height: 30px;cursor: pointer;
+                }
+            }
+        }
+        .text-btn{
+            color: #1890ff;cursor: pointer;
+        }
+    }
+}
+.item_text{
+    margin-bottom: 12px;
+    :global{
+        .ant-form-item-control-input-content{
+            display: flex;
+            justify-content: space-between;
+            .ant-btn{
+                font-size: 12px;
+                &:hover{
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+}

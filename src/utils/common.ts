@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef } from 'react'
 
 // 设置cookie、默认有效时间7天(可设置小数)
 export const setCookie = (name: string, value: any, day: number = 7) => {
@@ -41,20 +40,6 @@ export const dispatchProps = (dispatch: Function) => {
             dispatch({ type, value })
         }
     }
-}
-
-// useCallbackState封装返回修改后的值
-export const useCallbackState = (value: any) => {
-    const cbRef = useRef()
-    const current: any = cbRef.current
-    const [data, setData] = useState(value)
-    useEffect(() => {
-        current && current(data)
-    }, [current, data])
-    return [data, (d: any, callback: any) => {
-        cbRef.current = callback
-        setData(d)
-    }]
 }
 
 // 防抖

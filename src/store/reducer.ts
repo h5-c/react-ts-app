@@ -9,11 +9,12 @@ const defaultState = {
 }
 
 const reducer = (state: any = defaultState, action: { type: string, value: boolean | string | number | object | any[] }) => {
-    const stateCopy = deepCopy(state),
-        { type, value } = action
+    const stateCopy = deepCopy(state)
+    const { type, value } = action
     if (type && value !== undefined) {
         stateCopy[type] = value
     }
     return stateCopy
 }
+
 export default reducer
