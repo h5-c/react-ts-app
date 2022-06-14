@@ -32,6 +32,7 @@ interface state{
         num: number | null
     }
     form: form
+    btnLoading: boolean
     modal: {
         title: string | null
         visible: boolean
@@ -57,6 +58,7 @@ export default function Index(props: { setRoutes: Function }) {
             confirmCode: '',
             remember: ''
         },
+        btnLoading: false,
         modal: {
             title: null,
             visible: false,
@@ -169,7 +171,7 @@ export default function Index(props: { setRoutes: Function }) {
     }, {
         type: 'children',
         children: (<>
-            <Button type="primary" htmlType="submit" style={{ width: 'calc(100% - 69.75px)', borderRadius: '16px' }}>注册</Button>
+            <Button type="primary" htmlType="submit" disabled={data.btnLoading} style={{ width: 'calc(100% - 69.75px)', borderRadius: '16px' }}>注册</Button>
         </>)
     }]
     // 打开用户协议弹窗
@@ -200,16 +202,18 @@ export default function Index(props: { setRoutes: Function }) {
                 ...value,
                 password
             }
+            setData({ ...data, btnLoading: true })
             register(params).then((res: any) => {
                 const payload = res.payload
                 if (res.msg === 'ok' && payload) {
                     setCookie('token', payload.token, 0.00023148148148148146)
-                    setCookie('userInfo', payload)
                     dynamicRoutes(payload.token).then((routes: any) => {
                         props.setRoutes(routes)
                         navigate('/')
                     })
                 }
+            }).catch(() => {
+                setData({ ...data, btnLoading: false })
             })
         } else {
             message.error('请阅读并勾选《用户服务协议》和《隐私协议》!')
