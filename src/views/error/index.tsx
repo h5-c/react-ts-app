@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { getCookie } from '@/utils/common'
 import modules from './error.module.scss'
 
@@ -21,8 +21,13 @@ export default function Index(props: {id?: string}) {
         </div>
     }
     useEffect(() => {
-        // const token = getCookie('token')
-        // if (!token) navigate('/login')
+        const token = getCookie('token')
+        if (!token) {
+            message.warning('登录失效、3秒后返回登录页面')
+            setTimeout(() => {
+                navigate('/login')
+            }, 3000)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (

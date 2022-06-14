@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Spin, Modal, message, Form } from 'antd'
-import { sysRegion } from '@/api/request-url'
+import { Tabs, Button, Spin, Modal, message } from 'antd'
+import { sysRegion, register } from '@/api/request-url'
+import { setCookie } from '@/utils/common'
+import dynamicRoutes from '@/router/dynamic-routes'
 import FormView from '@/components/form-view'
 import jsencrypt from 'jsencrypt'
-// import ScrollView from 'react-custom-scrollbars'
+import loginBg from '@/assets/images/login_bg.mp4'
 import modules from './register.module.scss'
 
 interface region{
@@ -104,8 +106,8 @@ export default function Index(props: { setRoutes: Function }) {
         label: '密码',
         min: 8,
         max: 24,
-        getValueFromEvent: (e: any) => e.target.value.replace(/[^0-9a-zA-Z]/g,''),
-        rules: [{ required: true, min: 8, message: '请输入8位以上由大、小写，数字组成的密码！'}]
+        getValueFromEvent: (e: any) => e.target.value.replace(/[^0-9a-zA-Z.!@#$]/g,''),
+        rules: [{ required: true, min: 8, message: '请输入8位以上由大、小写，数字、符号(.!@#$)组成的密码！'}]
     }, {
         type: 'input',
         types: 'password',
@@ -113,7 +115,7 @@ export default function Index(props: { setRoutes: Function }) {
         label: '确认密码',
         min: 8,
         max: 24,
-        getValueFromEvent: (e: any) => e.target.value.replace(/[^0-9a-zA-Z]/g,''),
+        getValueFromEvent: (e: any) => e.target.value.replace(/[^0-9a-zA-Z.!@#$]/g,''),
         rules: [(form: { getFieldValue: Function }) => ({ required: true, validator(_: any, value: string) {
             if (value && value.length >= 8) {
                 if (form.getFieldValue('password') === value) return Promise.resolve()
@@ -167,7 +169,7 @@ export default function Index(props: { setRoutes: Function }) {
     }, {
         type: 'children',
         children: (<>
-            <Button type="primary" htmlType="submit">注册</Button>
+            <Button type="primary" htmlType="submit" style={{ width: 'calc(100% - 69.75px)', borderRadius: '16px' }}>注册</Button>
         </>)
     }]
     // 打开用户协议弹窗
@@ -194,7 +196,21 @@ export default function Index(props: { setRoutes: Function }) {
             let jsen = new jsencrypt()
             jsen.setPublicKey('-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgNefYXp+cwYyqIvQJNPE8EqJad+wswuNA7qQouAh23LbYprfduv/ERjJd2F1L74WysKqjHhGXVHY3rnbggZMtnXaO4Tp7mOlyJEA+FhybmaWujUpQXcUPhDhLNs8ZLPCSjz4PdIxIu9COroQnbXWpN1A9VJef8clmnYiIfw0PwQIDAQAB-----END PUBLIC KEY-----')
             const password = jsen.encrypt(value.password)
-            console.log({ ...value, password})
+            const params = {
+                ...value,
+                password
+            }
+            register(params).then((res: any) => {
+                const payload = res.payload
+                if (res.msg === 'ok' && payload) {
+                    setCookie('token', payload.token, 0.00023148148148148146)
+                    setCookie('userInfo', payload)
+                    dynamicRoutes(payload.token).then((routes: any) => {
+                        props.setRoutes(routes)
+                        navigate('/')
+                    })
+                }
+            })
         } else {
             message.error('请阅读并勾选《用户服务协议》和《隐私协议》!')
         }
@@ -207,8 +223,17 @@ export default function Index(props: { setRoutes: Function }) {
     }, [])
     return (
         <div className={modules.box}>
-            <FormView items={formList} onFinish={onFinish} onValuesChange={onValuesChange} />
-            <Modal width='800px' title={data.modal.title} visible={data.modal.visible} onCancel={onModalCancel} footer={null}>{data.modal.children}</Modal>
+            <video className={modules.bg} autoPlay loop muted>
+                <source src={loginBg} type="video/mp4"/>
+            </video>
+            <div className={modules.content}>
+                <Tabs defaultActiveKey="1" centered>
+                    <Tabs.TabPane tab='用户注册' key='1'>
+                        <FormView items={formList} onFinish={onFinish} onValuesChange={onValuesChange} />
+                    </Tabs.TabPane>
+                </Tabs>
+                <Modal width='800px' title={data.modal.title} visible={data.modal.visible} onCancel={onModalCancel} footer={null}>{data.modal.children}</Modal>
+            </div>
         </div>
     )
 }

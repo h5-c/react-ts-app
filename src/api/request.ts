@@ -1,11 +1,6 @@
 import service from './index'
-import store from '@/store'
 
-const request = (method: string, url: string, params?: object, data?: object) => {
-    let defaultParams = store.getState().defaultParams
-    if (method === 'GET') params = { ...params, ...defaultParams }
-    return service.request({ method, url, params, data })
-}
+const request = (method: string, url: string, params?: object, data?: object) => service.request({ method, url, params, data })
 
 export const get = (url: string, params?: object) => request('GET', url, params, {})
 

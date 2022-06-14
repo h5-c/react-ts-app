@@ -8,8 +8,8 @@ import FormView from '@/components/form-view'
 import jsencrypt from 'jsencrypt'
 import QRCode from 'qrcode.react'
 import dynamicRoutes from '@/router/dynamic-routes'
-import modules from './login.module.scss'
 import loginBg from '@/assets/images/login_bg.mp4'
+import modules from './login.module.scss'
 
 export default function Index(props: { setRoutes: Function }) {
     const navigate = useNavigate()
@@ -27,7 +27,7 @@ export default function Index(props: { setRoutes: Function }) {
         label: '密码',
         min: 8,
         max: 24,
-        getValueFromEvent: (e: any) => e.target.value.replace(/[^0-9a-zA-Z!@]/g,''),
+        getValueFromEvent: (e: any) => e.target.value.replace(/[^0-9a-zA-Z.!@#$]/g,''),
         rules: [{ required: true, min: 8, message: '请输入8位以上由大、小写，数字组成的密码！'}]
     }, {
         name: 'captcha',
@@ -50,7 +50,7 @@ export default function Index(props: { setRoutes: Function }) {
     }, {
         type: 'children',
         children: (<>
-            <Button type="primary" htmlType="submit" style={{ width: '230px' }} loading={data.isDisabled}>登录</Button>
+            <Button type="primary" htmlType="submit" style={{ width: 'calc(100% - 69.75px)', borderRadius: '16px' }} loading={data.isDisabled}>登录</Button>
         </>)
     }]
     const formListB = [{
@@ -86,7 +86,7 @@ export default function Index(props: { setRoutes: Function }) {
     }, {
         type: 'children',
         children: (<>
-            <Button type="primary" htmlType="submit" style={{ width: '230px' }} loading={data.isDisabled}>登录</Button>
+            <Button type="primary" htmlType="submit" style={{ width: 'calc(100% - 69.75px)', borderRadius: '16px' }} loading={data.isDisabled}>登录</Button>
         </>)
     }]
     const onFinish = (value: any) => {
@@ -101,9 +101,8 @@ export default function Index(props: { setRoutes: Function }) {
                 login(params).then((res: any) => {
                     let payload = res.payload
                     if (res.msg === 'ok' && payload) {
-                        setCookie('token', payload.access_token, 0.00023148148148148146)
-                        setCookie('userInfo', payload.userInfo)
-                        dynamicRoutes(payload.access_token).then((routes: any) => {
+                        setCookie('token', payload.token, 0.00023148148148148146)
+                        dynamicRoutes(payload.token).then((routes: any) => {
                             props.setRoutes(routes)
                             navigate('/')
                         })
@@ -162,10 +161,10 @@ export default function Index(props: { setRoutes: Function }) {
             <div className={modules.content}>
                 <Tabs defaultActiveKey="1" centered onChange={onChange}>
                     <Tabs.TabPane tab="密码登录" key="1">
-                        <FormView class={modules.form} items={formList} onFinish={onFinish} />
+                        <FormView items={formList} onFinish={onFinish} />
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="短信验证" key="2">
-                        <FormView class={modules.form} items={formListB} onFinish={onFinish} />
+                        <FormView items={formListB} onFinish={onFinish} />
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="扫码登录" key="qrCode">
                         <div className={`${modules.form} ${modules.qr_code}`}>

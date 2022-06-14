@@ -7,7 +7,7 @@ import { UserDeleteOutlined, DownOutlined } from '@ant-design/icons'
 import { delCookie } from '@/utils/common'
 
 function Index(state: { class: string; setRoutes: Function; user?: { name?: string }; getDispatch?: Function }) {
-    const [data, setData] = useState({ userName: null })
+    const [data, setData] = useState({ name: null })
     const getLogin = () => {
         Modal.confirm({
             title: '提示',
@@ -30,17 +30,17 @@ function Index(state: { class: string; setRoutes: Function; user?: { name?: stri
         label: <span onClick={getLogin}>退出登录</span>
     }]
     useEffect(() => {
-        setData((res: any) => ({ ...res, userName: state.user && state.user.name }))
+        setData((res: any) => ({ ...res, name: state.user && state.user.name }))
     }, [state.user])
     return (
-        <header className={`${state.class}`}>
+        <header className={state.class}>
             <div className='logo'>
                 ADMIN-LOGO
             </div>
             <div className='user-page'>
                 <UserDeleteOutlined />
                 <Dropdown className='user-name' overlay={<Menu items={menuList}/>} placement="bottom" arrow>
-                    <span>{data.userName} <DownOutlined /></span>
+                    <span>{data.name} <DownOutlined /></span>
                 </Dropdown>
             </div>
         </header>

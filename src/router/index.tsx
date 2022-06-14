@@ -1,5 +1,6 @@
 import { useState, useEffect, lazy } from 'react'
 import { HashRouter, useRoutes, useNavigate } from 'react-router-dom'
+import { message } from 'antd'
 import { getCookie } from '@/utils/common'
 import Suspense from '@/components/suspense'
 import dynamicRoutes from '@/router/dynamic-routes'
@@ -53,8 +54,25 @@ export default function Index() {
         element: <Suspense><Error/></Suspense>
     }]
     const Routes = () => useRoutes([...basicsRoutes, ...data.DynamicRoutes ])
+    const getUserAgent = () => {
+        const userAgent= navigator.userAgent.toLowerCase();
+        const bIsIpad = userAgent.match(/ipad/i)
+        const bIsIphoneOs = userAgent.match(/iphone os/i)
+        const bIsMidp = userAgent.match(/midp/i)
+        const bIsUc7 = userAgent.match(/rv:1.2.3.4/i)
+        const bIsUc = userAgent.match(/ucweb/i)
+        const bIsAndroid= userAgent.match(/android/i)
+        const bIsCE = userAgent.match(/windows ce/i)
+        const bIsWM = userAgent.match(/windows mobile/i)
+        const mobilds = bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM
+        if (mobilds) {
+            message.warning(`您正在使用${mobilds[0]}浏览、请注意分辨率缩放`)
+        }
+    }
     useEffect(() => {
         const token = getCookie('token')
+        // 判断设备类型
+        getUserAgent()
         // 判断登录状态
         if (token) dynamicRoutes(token).then((routes: any) => {
             setRoutes(routes)

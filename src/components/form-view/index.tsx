@@ -46,21 +46,21 @@ export default function Index(props: props) {
             return children
         } else {
             if (types === 'password') {
-                return <Input.Password placeholder={placeholder ? placeholder : `请输入${min ? min + '~' : ''}${max ? max + '位' : ''}${label}`} maxLength={max} />
+                return <Input.Password allowClear placeholder={placeholder ? placeholder : `请输入${min ? min + '~' : ''}${max ? max + '位' : ''}${label}`} maxLength={max} />
             } else if (types === 'textArea') {
-                return <Input.TextArea placeholder={placeholder ? placeholder : `请输入${min ? min + '~' : ''}${max ? max + '位' : ''}${label}`} maxLength={max}/>
+                return <Input.TextArea allowClear placeholder={placeholder ? placeholder : `请输入${min ? min + '~' : ''}${max ? max + '位' : ''}${label}`} maxLength={max}/>
             } else {
-                return <Input placeholder={placeholder ? placeholder : `请输入${min ? min + '~' : ''}${max ? max + '位' : ''}${label}`} maxLength={max} addonAfter={addonAfter} />
+                return <Input allowClear placeholder={placeholder ? placeholder : `请输入${min ? min + '~' : ''}${max ? max + '位' : ''}${label}`} maxLength={max} addonAfter={addonAfter} />
             }
         }
     }
     return (
-        <Form className={props.class} labelCol={{ span: labelCol }} fields={props.fields} onFinish={props.onFinish} onFinishFailed={props.onFinishFailed} onValuesChange={props.onValuesChange}>
+        <Form className={modules.form} labelCol={{ span: labelCol }} fields={props.fields} onFinish={props.onFinish} onFinishFailed={props.onFinishFailed} onValuesChange={props.onValuesChange}>
             {
                 items.map((item, index) => {
                     return (
                         <Form.Item
-                            className={item.type !== 'text' ? modules.item : modules.item_text}
+                            className={`${modules.item} ${item.type === 'text' ? modules.text : ''}`}
                             wrapperCol={ !item.label ? { offset: labelCol } : undefined }
                             name={item.name}
                             label={item.label}
